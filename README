@@ -1,3 +1,14 @@
+
+About the project
+----------------------------------------------------
+This project is a University course project in which we were tasked to write a small scale game in a language
+That was developed for the course purposes (Named Jack)
+The language is like a basic java language with limited given classes and basic functions.
+The course staff decided that our game was uniqe and has entered NandToTeTris course hall of fame of creative video games project
+and made a demo video for us.
+Link For Demo https://www.youtube.com/watch?v=uDi2XhkPB8A
+--------------------------------------------------------------------------
+
 Red Light - Green Light game ("Dag maluach" in hebrew)
 ------------------------------------------------------------------
 
@@ -20,3 +31,4 @@ A lost game is not counted.
 The scores are kept in a linked list of players, and each node in this list is a linked list of scores itself.
 
 The drawings access the screen memory directly.
+----------------------------------------------------------------------
