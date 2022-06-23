@@ -1,11 +1,4 @@
-nimrod_al, yolozinsky
-===============================================================================
-Nimrod Alon, ID 209010917, nimrod.alon1@mail.huji.ac.il
-Yonatan Lozinsky, ID 316117886 , yonatan.lozinsky@mail.huji.ac.il
-===============================================================================
-
-
-Project 9 - Red Light - Green Light game ("Dag maluach" in hebrew)
+Red Light - Green Light game ("Dag maluach" in hebrew)
 ------------------------------------------------------------------
 
 Explanation
@@ -27,35 +20,3 @@ A lost game is not counted.
 The scores are kept in a linked list of players, and each node in this list is a linked list of scores itself.
 
 The drawings access the screen memory directly.
-
-
-Submitted Files
----------------
-Main.jack - The main file running the game.
-
-This game's entities:
-
-Player.jack - The player.
-RedLightDoll.jack - The doll, which the player needs to reach when it's not looking.
-RedLightGreenLightGame.jack - A game session object.
-ScoreList.jack - A linked list of scores (# of green light sessions)
-PlayerList.jack - A linked list of ScoreLists (one for each player)
-
-Drawing helpers, which access the memory directly as it's more efficient:
-
-DrawPlayer.jack - for the player
-DrawDoll.jack - for RedLightDoll
-DrawBackgrounds.jack - for the main menu
-
-README - This file.
-
-Remarks
--------
-* The README file must contain the following:
-- In the first line: login(s) of the author(s), 
-separated by commas and nothing else! 
-If you work alone, do not include a comma. 
-Logins should be identical to the names of your home folders and are 
-case-sensitive.
-- Name(s), email(s) and ID(s) of the project's author(s).
-- Any remarks you have about your submission.
