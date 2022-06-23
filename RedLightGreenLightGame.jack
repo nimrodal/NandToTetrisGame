@@ -1,0 +1,185 @@
+/** Represents the first game (redlight - greenlight)
+ ** we took some inspiration from squid game :)
+ */
+
+class RedLightGreenLightGame {
+    static int initialXpos, initialYpos;
+    field Array print_data;
+    field int green_counter;
+    field RedLightDoll red_light_doll;
+    field Player player;
+    field int player_direction;
+    field int line_x_position;
+
+    /* Creates a List. */
+    constructor RedLightGreenLightGame new(String name) {
+        let initialXpos = 27;
+        let initialYpos = 10;
+        let green_counter = 0;
+        let player = Player.new(name, initialXpos, initialYpos);
+        do player.setx(initialXpos);
+        do player.sety(initialYpos);
+        let line_x_position = 120;
+        do player.draw_still();
+        let red_light_doll = RedLightDoll.new(0, 40, 100, 30);
+
+// initialize print array
+        let print_data  = Array.new(7);
+        let print_data[0] = "Player's coordinates x=: ";
+        let print_data[1] = " y=: ";
+        let print_data[2] = "Green light seconds remaining: ";
+        let print_data[3] = "Red light seconds remaining: ";
+        let print_data[4] = "You have won!!! Mazal tov!!!";
+        let print_data[5] = "You have lost :( basa";
+        let print_data[6] = "Wait a few seconds please!";
+
+        return this;
+    }
+
+    /** Moves the player in the current direction. */
+    method void movePlayer() {
+        if (player_direction = 0) {
+            do player.draw_still();
+        } else {
+            if (player_direction = 1) { do player.erase(); do player.moveUp(); let player_direction=0; }
+            if (player_direction = 2) { do player.erase(); do player.moveDown(); let player_direction=0;}
+            if (player_direction = 3) { do player.erase(); do player.moveLeft(); let player_direction=0;}
+            if (player_direction = 4) { do player.erase(); do player.moveRight(); let player_direction=0;}
+        }
+        return;
+    }
+
+    method void drawLine() {
+        do Screen.drawLine(line_x_position, 0, line_x_position, 250);
+        return;
+    }
+
+    method void moveDoll() {
+        do red_light_doll.draw();
+        return;
+    }
+
+    method void drawStringOutputs() {
+        do Output.moveCursor(19,0);
+        do Output.printString(print_data[0]);
+        do Output.printInt(player.getx());
+        do Output.printString(print_data[1]);
+        do Output.printInt(player.gety());
+
+        do Output.moveCursor(20, 0);
+        // If doll is with the back to the player
+        if (red_light_doll.getDirection() = 0) {
+            do Output.printString(print_data[2]);
+            do Output.printInt(red_light_doll.getGreenTimer());
+        }
+        // If it's facing the player
+        else {
+            do Output.printString(print_data[3]);
+            do Output.printInt(red_light_doll.getRedTimer());
+        }
+        return;
+    }
+
+    method boolean hasPlayerCrossedTheLine() {
+        return (player.getx() < 8);
+    }
+
+    method boolean hasPlayerMovedDuringRedLight() {
+        var boolean hasMovedX, hasMovedY;
+        let hasMovedX = ~(player.get_x_pos_on_stop() = player.getx());
+        let hasMovedY = ~(player.get_y_pos_on_stop() = player.gety());
+
+        // If doll is facing the player
+        if (red_light_doll.getDirection() = 1) {
+            // if player has moved during redlight
+            if (hasMovedX | hasMovedY) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Runs the game: handles the user's inputs and moves the square accordingly */
+    method int run() {
+        var char key; // the key currently pressed by the user
+        var boolean exit, hasMoved, dollHasJustBecomeRed;
+        let hasMoved = false;
+        let exit = false;
+        let dollHasJustBecomeRed = false;
+
+        while (~exit) {
+            while (key = 0) {
+                let key = Keyboard.keyPressed();
+                do movePlayer();
+                do moveDoll();
+                do movePlayer();
+
+                do drawLine();
+                // handle freezing coordinates to check if player moved
+                let dollHasJustBecomeRed = red_light_doll.tickRedAndGreen();
+                if (dollHasJustBecomeRed) {
+                    let green_counter = green_counter + 1;
+                    do player.freeze_coordinates_on_red();
+                }
+
+                // check if lost
+                if (red_light_doll.getDirection() = 1) {
+                    let hasMoved = hasPlayerMovedDuringRedLight();
+                    if(hasMoved) {
+                        do Screen.clearScreen();
+                        do Output.moveCursor(10,20);
+                        do Output.printString(print_data[5]);
+                        do Output.moveCursor(11,20);
+                        do Output.printString(print_data[6]);
+
+                        do Sys.wait(5000);
+                        let exit = true;
+                        return 0;
+                    }
+                }
+
+                // check if won
+                if(hasPlayerCrossedTheLine()) {
+                    do Screen.clearScreen();
+                    do Output.moveCursor(10,17);
+                    do Output.printString(print_data[4]);
+                    do Output.moveCursor(11,17);
+                    do Output.printString(print_data[6]);
+
+                    do Sys.wait(5000);
+                    let exit = true;
+                    return green_counter;
+                }
+                // Uncomment for debugging:
+
+                // do drawStringOutputs();
+
+            }
+            if (key = 81) {
+                let exit = true;
+            }
+            if (key = 131) {
+                let player_direction = 1;
+            } // up arrow
+            if (key = 133) {
+                let player_direction = 2;
+            } // down arrow
+            if (key = 130) {
+                let player_direction = 3;
+            } // left arrow
+            if (key = 132) {
+                let player_direction = 4;
+            } // right arrow
+            let key = Keyboard.keyPressed();
+        } // while
+        return 0;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    // More list processing methods can come here.
+
+}

@@ -1,0 +1,146 @@
+/** Represents a linked list of players (which are a linkedlist of scores). */
+class PlayerList {
+    field String name;
+    field ScoreList scores; // this list's "data" is a linked list of scores
+    field PlayerList next;
+
+    /* Creates a List. */
+    constructor PlayerList new(String new_name, ScoreList new_score) {
+        let name = new_name;
+        let scores = new_score;
+        let next = null;
+        return this;
+    }
+
+    /** Accessors. */
+    method String getName() { return name; }
+    method int getNext() { return next; }
+    method void setName(String new_name){let name=new_name; return;}
+    method ScoreList getScores() {return scores;}
+    method void setScores(ScoreList sls) {let scores=sls; return;}
+    method void setNext(PlayerList next_node) { let next = next_node; return; }
+
+    // A function that compares strings (not == which is memory)
+    function boolean compareNames(String name1, String name2) {
+        var int index;
+        var int limit;
+
+        let index = 0;
+        let limit = name1.length();
+
+
+        // compare lengths, if not the same length they're not the same string
+        if (~(limit = name2.length())) {
+            return false;
+        }
+
+        // compare characters
+        while(index<limit) {
+            if (~(name1.charAt(index) = name2.charAt(index))) {
+                return false;
+            }
+            let index = index+1;
+        }
+
+        return true;
+    }
+
+    // Adds a score "node" to a player by their name
+    method void addScoreToPlayer(String name, ScoreList slist) {
+        var PlayerList cur;
+        var ScoreList cur_scores;
+        var String curname;
+        do Screen.clearScreen();
+
+        let cur = this;
+        while(~(cur = null)) {
+            let curname = cur.getName();
+            let cur_scores = cur.getScores();
+            
+            // Looks for a player with the given name
+            if (PlayerList.compareNames(curname, name)=true) 
+            {
+
+                if(cur_scores=null)
+                {
+                    do cur.setScores(slist);
+                    return;
+                }
+                else
+                {
+                     do cur_scores.pushToEnd(slist);
+                     return;
+                }
+            }
+        let cur = cur.getNext();
+        }
+        return;
+    }
+
+    // Returns true if the given name is of a player in the list
+    method boolean nameExists (String name) {
+        var PlayerList cur;
+
+        let cur = this;
+
+        while (~(cur=null)) {
+            if (PlayerList.compareNames(cur.getName(), name)=true) {
+                return true;
+            }
+            let cur = cur.getNext();
+        }
+        return false;
+    }
+
+    // Adds a new player to the end of this linked list
+    method void add_player(PlayerList new_player)
+    {
+        var PlayerList cur;
+        let cur=this;
+        while(~(cur.getNext()=null))
+        {
+            let cur=cur.getNext();
+        }
+        do cur.setNext(new_player);
+        return;
+    }
+
+    /** Prints this list. */
+    method void print() {
+        var ScoreList score;
+        var PlayerList current;    // initializes current to the first item
+        let current = this;  // of this list
+        if(current.getName()=null)
+        {
+            // Registering is mandatory
+            do Output.printString("No players registered");
+            return;
+        }
+        while (~(current = null)) {
+            let score = current.getScores();
+            do Output.printString(current.getName());
+            do Output.printChar(32); // prints a space
+            do score.print();
+            do Output.printChar(32); // prints a space
+            let current = current.getNext();
+        }
+        return;
+    }
+
+    /** Disposes this List by recursively disposing its tail. */
+    method void dispose() {
+        if (~(next = null)) {
+            do next.dispose();
+        }
+        if(~(name=null))
+        {
+            do name.dispose();
+        }
+        if(~(scores=null))
+        {
+            do scores.dispose();
+        }
+        do Memory.deAlloc(this);
+        return;
+    }
+}

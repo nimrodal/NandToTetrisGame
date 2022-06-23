@@ -1,0 +1,77 @@
+/** Represents a linked list of scores. */
+class ScoreList {
+    field int score; // a list consists of a data field,
+    field ScoreList next; // followed by a list
+
+    /* Creates a ScoreList. */
+    constructor ScoreList new(int new_score) {
+        let score = new_score;
+        let next = null;
+        return this;
+    }
+
+    /** Accessors. */
+    method int getScore() {
+        return score;
+    }
+    method int getNext() {
+        return next;
+    }
+    method void setScore(int new_score) {
+        let score = new_score;
+        return;
+    }
+    method void setNext(ScoreList next_node) {
+        let next = next_node;
+        return;
+    }
+
+    // Adds a new score to the end of the list
+    method void pushToEnd(ScoreList slist) {
+        var ScoreList cur;
+        let cur = this;
+        while (~(cur.getNext() = null)) {
+            let cur = cur.getNext();
+        }
+        do cur.setNext(slist);
+        return;
+    }
+    // Prints the score for this player - 
+    //which is his (green light)/(wins) ratio
+    method void print() {
+        var ScoreList current; // initializes current to the first item
+        var int score_sum;
+        var int score_counter;
+        var int avg;
+        let score_sum = 0;
+        let score_counter = 0;
+        let avg = 0;
+        let current = this; // of this list
+        // calculates the average for this player
+        while (~(current = null)) {
+            if(~(current.getScore()=0))
+            {
+                 let score_counter = score_counter + 1;
+            }
+            let score_sum = score_sum + current.getScore();
+            let current = current.getNext();
+        }
+        if (score_counter = 0) {
+            do Output.printInt(avg);
+        } else {
+            let avg = Math.divide(score_sum, score_counter);
+            do Output.printInt(avg);
+        }
+        return;
+    }
+
+    /** Disposes this List by recursively disposing its tail. */
+    method void dispose() {
+        if (~(next = null)) {
+            do next.dispose();
+        }
+        // Uses an OS routine to recycle this object.
+        do Memory.deAlloc(this);
+        return;
+    }
+}

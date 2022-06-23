@@ -1,0 +1,105 @@
+/** Represents a RedLightDoll*/
+class RedLightDoll {
+	field int x_pos;
+	field int y_pos;
+	field int direction;
+	field int green_timer;
+	field int red_timer;
+	field int red_start; // Amount to count down from
+	field int green_start;
+
+	/* Creates a RedLightDoll. */
+	constructor RedLightDoll new(int x, int y, int reds, int greens) {
+		let x_pos = x;
+		let y_pos = y;
+		let direction = 0;
+		let red_start = reds;
+		let red_timer = 0;
+		let green_start = greens;
+		let green_timer = 0;
+		do startGreen();
+		do startRed();
+		do draw();
+		return this;
+	}
+
+	// getters
+	method int getDirection() {
+		return direction;
+	}
+
+	method int getRedTimer() {
+		return red_timer;
+	}
+
+	method int getGreenTimer() {
+		return green_timer;
+	}
+
+	// Draws the doll based on it's direction (can see or not)
+	method void draw() {
+		if (direction = 0) {
+			do DrawDoll.drawBlindfoldedDoll(x_pos, y_pos);
+
+		} else {
+			do DrawDoll.drawDoll(x_pos, y_pos);
+
+		}
+		return;
+	}
+
+	/** Accessors. */
+	method void setDirection(int newd) {
+		let direction = newd;
+		return;
+	}
+
+	method void startGreen() {
+		let green_timer = green_start;
+		return;
+	}
+
+	method void startRed() {
+		let red_timer = red_start;
+		return;
+	}
+
+	method boolean isGreen() {
+		if (green_timer = 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	// boolean represents "has just turned to red" to signal to game
+	// that we should take player's last coordinates to check if moved
+
+	method boolean tickRedAndGreen() {
+		// if doll is facing players
+		if (direction = 1) {
+			let red_timer = red_timer - 1;
+
+			if (red_timer = 0) {
+				let direction = 0;
+				let red_timer = red_start;
+			}
+		}
+		// If has back to players
+		else {
+			let green_timer = green_timer - 1;
+			if (green_timer = 0) {
+				let direction = 1;
+				let green_timer = green_start;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/** Disposes this RedLightDoll*/
+	method void dispose() {
+		do Memory.deAlloc(this);
+		return;
+	}
+}

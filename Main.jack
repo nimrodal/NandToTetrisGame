@@ -1,0 +1,149 @@
+class Main {
+   static Array outputs;
+
+   // Function to initialize the outputs
+   function void initialize_outputs() {
+      let outputs = Array.new(11);
+      let outputs[0] = "Welcome to squid game! Don't forget to smile ^_^";
+      let outputs[1] = "Press P to set player name (it's mandatory)";
+      let outputs[2] = "Press Q to Quit";
+      let outputs[3] = "Current player: ";
+      let outputs[4] = "Press S to start a game session";
+      let outputs[5] = "Will accept letters until you press enter:";
+      let outputs[6] = "No player name was registered";
+      let outputs[7] = "Green lights/win ratio:";
+      let outputs[8] = "Instructions:";
+      let outputs[9] = "Try to get to the finish line,";
+      let outputs[10] = "you can advance only when the doll can't see you!";
+
+
+
+      return;
+   }
+
+   // Main menu print screen
+   function void set_visuals(PlayerList players, String cur_name) {
+      do Screen.clearScreen();
+      do Output.moveCursor(0, 0);
+      // opening messege
+      do DrawBackgrounds.drawShapes(8, 140);
+      do Output.printString(outputs[0]);
+      do Output.println();
+      do Output.println();
+
+      // info for keyboard option to add a new player
+      do Output.printString(outputs[1]);
+      do Output.println();
+      // info for keyboard option to quiting game
+      do Output.printString(outputs[2]);
+      do Output.println();
+      // info for keyboard option to start a game session
+      do Output.printString(outputs[4]);
+      do Output.println();
+
+
+      // display all avg players scores
+      do Output.println();
+      do Output.printString(outputs[7]);
+      do Output.println();
+      do players.print();
+      do Output.println();
+      if (~(cur_name = null)) {
+         do Output.println();
+
+         do Output.printString(outputs[3]);
+         do Output.printString(cur_name);
+         do Output.println();
+      }
+      do Output.println();
+      do Output.printString(outputs[8]);
+      do Output.println();
+      do Output.printString(outputs[9]);
+      do Output.println();
+      do Output.printString(outputs[10]);
+
+
+
+      return;
+   }
+
+   // Adds player to players linked list
+   function String add_player(PlayerList players) {
+      var String playerName;
+      var PlayerList new_player_list;
+      do Screen.clearScreen();
+      do Output.moveCursor(0, 0);
+      let playerName = Keyboard.readLine(outputs[5]);
+      return playerName;
+   }
+
+   // Adds player to players linked list
+   function void add_score(PlayerList players, String playerName, int score) {
+      var ScoreList new_score;
+      let new_score = ScoreList.new(score);
+      do players.addScoreToPlayer(playerName, new_score);
+      return;
+   }
+
+// Main function of the game
+   function void main() {
+      var RedLightGreenLightGame first_game;
+      var PlayerList players;
+      var ScoreList cur_score_list;
+      var String cur_name;
+      var int cur_score;
+      var boolean exit;
+      var char key; // the key currently pressed by the user
+      do Main.initialize_outputs();
+      let key = 0;
+      let cur_score = 0;
+      let exit = false;
+      let cur_name = null;
+      let players = PlayerList.new(null, null);
+
+      do Main.set_visuals(players, cur_name);
+      while (~(exit)) {
+         while (key = 0) {
+            let key = Keyboard.keyPressed();
+            // press q
+         }
+
+         if (key = 81) {
+            let exit = true;
+         }
+         // press p
+         if (key = 80) {
+            do Sys.wait(100);
+            let cur_name = Main.add_player(players);
+            if ((players.getName() = null)) {
+               do players.setName(cur_name);
+            }
+            if (~(players.nameExists(cur_name))) {
+               do players.add_player(PlayerList.new(cur_name, null));
+            }
+            do Main.set_visuals(players, cur_name);
+         }
+         // press s
+         if (key = 83) {
+            if (~(cur_name = null)) {
+               do Screen.clearScreen();
+               let first_game = RedLightGreenLightGame.new(cur_name);
+               let cur_score = first_game.run();
+               let cur_score_list = ScoreList.new(cur_score);
+               do Screen.clearScreen();
+               do players.addScoreToPlayer(cur_name, cur_score_list);
+               do Main.set_visuals(players, cur_name);
+               do first_game.dispose();
+
+            } else {
+               do Output.printString(outputs[6]);
+            }
+
+         }
+         let key = 0;
+         do Sys.wait(1000);
+      }
+      do players.dispose();
+      return;
+   }
+}

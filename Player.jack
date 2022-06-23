@@ -1,0 +1,155 @@
+/** Represents a player*/
+class Player {
+   field String name;
+   field int x_pos;
+   field int y_pos;
+   field int x_pos_on_stop;
+   field int y_pos_on_stop;
+   field int speedX;
+   field int speedY;
+   field int direction;
+   field int sizeX;
+   field int sizeY;
+   field boolean is_facing_left;
+   /* Creates a Player. */
+   constructor Player new(String name, int x_pos, int y_pos) {
+      let name = name;
+      let x_pos = x_pos;
+      let y_pos = y_pos;
+      let x_pos_on_stop = 0;
+      let y_pos_on_stop = 0;
+      let direction = 0;
+      let speedX = 1;
+      let speedY = 1;
+      let sizeX = 48;
+      let sizeY = 56;
+      let is_facing_left = true;
+      return this;
+   }
+
+   /** Accessors. */
+   method int getx() {
+      return x_pos;
+   }
+   method int gety() {
+      return y_pos;
+   }
+
+   method int get_x_pos_on_stop() {
+      return x_pos_on_stop;
+   }
+   method int get_y_pos_on_stop() {
+      return y_pos_on_stop;
+   }
+
+
+   method int getname() {
+      return name;
+   }
+
+   method int getdirection() {
+      return direction;
+   }
+
+   method void setx(int newx) {
+      let x_pos = newx;
+      return;
+   }
+
+   method void sety(int newy) {
+      let y_pos = newy;
+      return;
+   }
+   method void setspeedY(int news) {
+      let speedY = news;
+      return;
+   }
+
+   method void setspeedX(int news) {
+      let speedX = news;
+      return;
+   }
+
+   // Freezes coordinates, used when the doll becomes red (can see),
+   // Then we need to compare the player's current coordinates to
+   // past coordinates to see if moved.
+   method void freeze_coordinates_on_red() {
+      let x_pos_on_stop = x_pos;
+      let y_pos_on_stop = y_pos;
+      return;
+   }
+
+   /** Disposes this List by recursively disposing its tail. */
+   method void dispose() {
+      do Memory.deAlloc(this);
+      return;
+   }
+
+   // draw without moving
+   method void draw_still() {
+      do DrawPlayer.drawPlayerLeft(x_pos, y_pos);
+      return;
+   }
+
+   // Erase (used when the player moves)
+   method void erase() {
+      do DrawPlayer.drawWhite(x_pos, y_pos);
+      return;
+   }
+
+   // Move functions:
+
+   method void moveUp() {
+      // If it won't pass screen's limits
+      if (y_pos > 1) {
+         do sety(y_pos - speedY);
+         if (is_facing_left) {
+            do DrawPlayer.drawPlayerLeft(x_pos, y_pos);
+         } else {
+            do DrawPlayer.drawPlayerRight(x_pos, y_pos);
+         }
+      }
+      return;
+   }
+
+   method void moveDown() {
+   // If it won't pass screen's limits
+      if (y_pos < 22) {
+         do sety(y_pos + speedY);
+      }
+      if (is_facing_left) {
+         do DrawPlayer.drawPlayerLeft(x_pos, y_pos);
+      } else {
+         do DrawPlayer.drawPlayerRight(x_pos, y_pos);
+      }
+      return;
+   }
+
+   method void moveLeft() {
+      // If it won't pass screen's limits
+      if (x_pos > 1) {
+         let is_facing_left = true;
+         do setx(x_pos - speedX);
+         if (is_facing_left) {
+            do DrawPlayer.drawPlayerLeft(x_pos, y_pos);
+         } else {
+            do DrawPlayer.drawPlayerRight(x_pos, y_pos);
+         }
+      }
+      return;
+   }
+
+   method void moveRight() {
+      // If it won't pass screen's limits
+      if (x_pos < 29) {
+         let is_facing_left = false;
+         do setx(x_pos + speedX);
+         if (is_facing_left) {
+            do DrawPlayer.drawPlayerLeft(x_pos, y_pos);
+         } else {
+            do DrawPlayer.drawPlayerRight(x_pos, y_pos);
+         }
+      }
+      return;
+   }
+}
